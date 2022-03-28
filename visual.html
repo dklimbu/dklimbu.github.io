@@ -1,0 +1,311 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Jmol Crystal Symmetry Explorer</title>
+<script type="text/javascript" src="./jmol/jsmol/JSmol.min.js"></script>
+<script type="text/javascript" src="./jmol/jsmol/js/Jmol2.js"></script>
+<script type="text/javascript" src="./jmol/jsmol/flot/jquery.flot2.js"></script>
+
+<script type="text/javascript">
+
+datadir = "../data"
+jmolInitialize("./jmol/jsmol")
+jmolSetMenuCssClass("' style='font-style:italic")
+
+
+var defaultScript = ""
+
+/// initial HTML for the page
+
+
+//// user actions from selections
+
+function getModel(justCheck) {
+	var d = document.getElementById("modelselect")
+	if (d.selectedIndex == 0)return
+	var model = d[d.selectedIndex].value
+	if (!model || justCheck && model == selectedModel)return
+	selectedModel = model
+	var cmd = (model == "zap" ? model : "load " + model);
+	document.getElementById("jmolCmd0").value=cmd
+	jmolScript(cmd)
+}
+
+function getTxtOp() {
+	getSelect(document.getElementById("txtop").value)
+}
+
+function getSelect(symop) {
+	var d = document.getElementById("atomselect")
+	var atomi = d.selectedIndex
+	var pt00 = d[d.selectedIndex].value
+	var showatoms = (document.getElementById("chkatoms").checked || atomi == 0)
+	jmolScript("display " + (showatoms ? "all" : "none"))
+	var d = document.getElementById("symselect")
+	var iop = parseInt(d[d.selectedIndex].value)
+	if (!iop && !symop) symop = document.getElementById("txtop").value
+	if (!symop) {
+		if (!iop) {
+			jmolScript("select *;color opaque;draw sym_* delete")
+			return
+		}
+		symop = d[d.selectedIndex].text.split("(")[1].split(")")[0]
+		document.getElementById("txtop").value = symop
+	}
+	if (pt00.indexOf("{") < 0)pt00 = "{atomindex=" + pt00 + "}" 
+	var d = document.getElementById("selopacity")
+	var opacity = parseFloat(d[d.selectedIndex].value)
+	if (opacity < 0) opacity = 1
+	var script = "select *;color atoms translucent " + (1-opacity)
+	script += ";draw symop \"" + symop + "\" " + pt00 + ";"
+	if (atomi == 0) {
+		script += ";select symop=1555 or symop=" + iop + "555;color opaque;"
+	} else if (atomi >= 3) {
+		script += ";pt1 = " + pt00 + ";pt2 = all.symop(\"" + symop + "\",pt1).uxyz.xyz;select within(0.2,pt1) or within(0.2, pt2);color opaque;" 
+	}
+	secho = SymInfo[symop]
+	if (!secho){
+		secho = jmolEvaluate("all.symop('" + symop + "',{0 0 0},'draw')").split("\n")[0]
+		if (secho.indexOf("//") == 0) {
+			secho = secho.substring(2)	
+		} else {
+			secho = symop
+		}
+	}
+	script = "set echo top right;echo " + secho + ";" + script
+	jmolScript(script)
+}
+
+function doarrow(x) {
+	var d = document.getElementById("symselect")
+	x += d.selectedIndex
+	if (x < 0 || x >= d.length) return
+	d.selectedIndex = x
+	getSelect()
+}
+
+/// Jmol callbacks
+
+function errorCallback(a, b, msg) {
+ alert(msg)
+}
+
+function loadstructCallback() {
+	//document.getElementById("note").style.display = "block"
+	document.getElementById("loading").style.display = "block"
+	setTimeout('getSymInfo()',100) // need the timeout to get another thread or this will lock 
+}
+
+function pickCallback(a,b,i) {
+	var d = document.getElementById("atomselect")
+	d.selectedIndex = i + 3
+	document.getElementById("chkatoms").checked = true
+	getSelect()
+}
+
+SymInfo = {}
+
+function getSymInfo() {
+
+	// update all of the model-specific page items
+
+	SymInfo = {}
+	var s = ""
+	var info = jmolEvaluate('script("show spacegroup")')
+	if (info.indexOf("x,") < 0) {
+		s = "no space group"
+	} else {
+		var S = info.split("\n")
+		var hm = "?"
+		var itcnumber = "?"
+		var hallsym = "?"
+		var latticetype = "?"
+		var nop = 0 
+		var slist = ""
+		for (var i = 0; i < S.length; i++) {
+			var line = S[i].split(":")
+			if (line[0].indexOf("Hermann-Mauguin symbol") == 0)
+				s += "<br>" + S[i].replace(/Hermann\-Mauguin/,"<a href=http://en.wikipedia.org/wiki/Hermann%E2%80%93Mauguin_notation target=_blank>Hermann-Mauguin</a>")
+			else if (line[0].indexOf("international table number") == 0)
+				s += "<br>" + S[i].replace(/international table number/,"<a href=http://it.iucr.org/ target=_blank>international table</a> number")
+			else if (line[0].indexOf("Hall symbol") == 0)
+				s += "<br>" + S[i].replace(/Hall symbol/,"<a href=http://cci.lbl.gov/sginfo/hall_symbols.html target=_blank>Hall</a> symbol")
+			else if (line[0].indexOf("lattice type") == 0)
+				s += "<br>" + S[i].replace(/lattice type/,"<a href=http://cst-www.nrl.navy.mil/bind/static/lattypes.html target=_blank>lattice type</a>")
+			else if (line[0].indexOf(" symmetry operations") >= 0) 
+				nop = parseInt(line[0])
+			else if (nop > 0 && line[0].indexOf(",") >= 0)
+				slist += "\n" + S[i]
+		}
+		s += "<br><br><a href=javascript:doarrow(-1)><img align=bottom src=arrowleft.png border=0 /></a> "
+		s += nop + " operators"
+		s += " <a href=javascript:doarrow(1)><img align=bottom src=arrowright.png border=0 /></a>"
+
+		var S = slist.split("\n")
+		var n = 0;
+		var i = -1;while (S[++i].indexOf(",") < 0){}
+		s += "<br><select id='symselect' onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\"><option value=0>select a symmetry operation</option>"
+		for (;i < S.length;i++)
+			if (S[i].indexOf("x") >= 0) {
+				var sopt = S[i].split("|")[0].split("\t")
+				SymInfo[sopt[1]] = S[i].replace(/\t/,": ").replace(/\t/,"|")
+				sopt = sopt[0] + ": " + sopt[2] + " (" + sopt[1] + ")"
+				s += "<option value='" + parseInt(sopt) + "'>" + sopt + "</option>" 
+			}
+		s += "</select>"
+
+		s += "</br><input type=text id=txtop width=30 value='1-x,1-y,1-z' /><a href=javascript:getTxtOp()>show</a>"
+
+		var info = jmolEvaluate('{*}.label("#%i %a {%[fxyz]/1}")').split("\n")
+		var nPoints = info.length
+		var nBase = jmolEvaluate('{symop=1555}.length')
+		s += "<br><select id='atomselect' onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\"><option value=0>base atoms</option>"
+		s += "<option value='{0 0 0}'>{0 0 0}</option>"
+		s += "<option value='{1/2 1/2 1/2}'>{1/2 1/2 1/2}</option>"
+		for (var i = 0; i < nPoints; i++)
+			s+= "<option value=" + i + (i == 0 ? " selected" : "") + ">" + info[i] + "</option>" 
+		s += "</select>"
+
+		s += "</br><input type=checkbox id=chkatoms onchange=getSelect() />show atoms"
+		s += " opacity:<select id=selopacity onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\">"
+		  + "<option value=0.0>0%</option>"
+		  + "<option value=0.2 selected>20%</option>"
+		  + "<option value=0.4>40%</option>"
+		  + "<option value=0.6>60%</option>"
+		  + "<option value=1.0>100%</option>"
+		  + "</select>"
+		
+	}
+	document.getElementById("syminfo").innerHTML = s
+}
+
+
+// lower panel:
+Jmol.setButtonCss(null,"style='width:160px'");
+	var s = 
+		Jmol.jmolButton(jmol,"color {*} property vxyz", "color by modulation")
+		+ Jmol.jmolButton(jmol,"color {*} cpk", "reset color")
+		+ "<br>"
+Jmol.setButtonCss(null,"style='width:120px'");
+	s	+= Jmol.jmolButton(jmol,"wireframe -0.1 #alt:SETTING Line", "wireframe")
+		+ Jmol.jmolButton(jmol,"spacefill only;spacefill 23%;wireframe 0.15 #alt:SETTING Ball and Stick","ball&stick");
+	s += Jmol.jmolButton(jmol,"spacefill #alt:SETTING van der Waals Spheres", "spacefill");	
+Jmol.setButtonCss(null,"style='width:100px'");
+$("#lowerpanel").html(s);
+
+</script>
+</head>
+<body onload="document.getElementById('modelselect').selectedIndex=0">
+
+<table><tr>
+<td align=center valign=top style="width:300px">
+<h1>MOFs Structure Visualization</h1>
+<br>
+<h3>Method Development and Materials Simulation Laboratory</h3>
+<h4>NJIT, Newark</h4>
+
+
+<div id=loading style="display:none">
+
+<script type="text/javascript">
+jmolBr()
+_jmol.buttonCssText="style='width:160px'"
+jmolBr()
+jmolButton("load \"\" 1 FILTER 'MOLECULAR'","molecular units")
+jmolBr()
+jmolButton("load \"\" {1 1 1}", "unpacked cell")
+jmolBr()
+jmolButton("load \"\" 1 packed","packed cell")
+jmolBr()
+jmolButton("load \"\" 1 {455 655 1}","3x1x1 set")
+jmolBr()
+jmolButton("load \"\" 1 {545 565 1}","1x3x1 set")
+jmolBr()
+jmolButton("load \"\" 1 {554 556 1}","1x1x3 set")
+jmolBr()
+jmolButton("load \"\" 1 {445 665 1}","3x3x1 plane")
+jmolBr()
+jmolButton("load \"\" 1 {454 656 1}","3x1x3 plane")
+jmolBr()
+jmolButton("load \"\" 1 {544 566 1}","1x3x3 plane")
+jmolBr()
+jmolButton("load \"\" 1 {444 666 1}","3x3x3 cube")
+jmolBr()
+</script>
+</div>
+
+</td>
+<td align=center  valign=top>
+<br>
+<script type="text/javascript">
+jmolApplet(["500","500"],';background white;set errorCallback "errorCallback";set loadstructcallback "loadstructCallback";set pickCallback "pickCallback";set zoomlarge false;' + defaultScript)
+_jmol.buttonCssText="style='width:100px'"
+jmolBr()
+//jmolButton("console")
+//jmolCommandInput()
+
+</script>
+</td><td  valign=top>
+
+<div id='syminfo'></div>
+
+<br>
+<script type="text/javascript">
+_jmol.buttonCssText="style='width:160px'"
+jmolButton(" "," MENU OPTIONS: ")
+jmolBr()
+jmolButton("load file \"?\" 1 packed","Load MOFs FILE")
+jmolBr()
+//jmolButton("script ?.spt","Load SCRIPT")
+//jmolBr()
+//jmolButton("write FILE ?","Save FILE")
+//jmolBr()
+//jmolButton("write STATE ?.spt","Save STATE")
+//jmolBr()
+jmolButton("write IMAGE ?.jpg","Save JPG")
+jmolBr()
+jmolButton("write IMAGE ?.png","Save PNG")
+jmolBr()
+jmolButton("write ?.jmol","Save JMOL")
+jmolBr()
+</script>
+
+<br>
+<br>
+<br>
+<script type="text/javascript">
+jmolButton(" "," DISPLAY OPTIONS: ")
+jmolBr()
+jmolButton("select all ; spacefill on; zoom 100", "Spacefill")
+jmolBr()
+jmolButton("select all ; spacefill 105; wireframe 35; zoom 100", "Ball and Stick")
+jmolBr()
+jmolButton("select all ; spacefill 0; wireframe 20; zoom 100", "Wireframe")
+jmolBr() 
+jmolButton("backgroundcolor = (backgroundcolor = '[x000000]' ? 'white': 'black')","Switch Background")
+jmolBr()
+</script>
+
+<script type="text/javascript">
+	var filestem="b1df";      
+	Jmol.script("axesOrientationRasmol=true; set measurementUnits angstroms; set bondTolerance 1.0; load "+filestem+".spt");
+</script>
+<br>
+<br>
+<font size="3x" face="verdana" color="blue">
+  <b>NOTE:</b>
+</font>
+<br>
+<font size="2.5x" face="verdana" color="red">
+	(To measure, double click first
+	and last atom of measurement!)
+</font>
+
+
+</table>
+
+
+
+</body>
+</html>
