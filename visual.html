@@ -21,7 +21,7 @@ var defaultScript = ""
 
 //// user actions from selections
 
-function getModel(justCheck) {
+/*function getModel(justCheck) {
 	var d = document.getElementById("modelselect")
 	if (d.selectedIndex == 0)return
 	var model = d[d.selectedIndex].value
@@ -30,7 +30,7 @@ function getModel(justCheck) {
 	var cmd = (model == "zap" ? model : "load " + model);
 	document.getElementById("jmolCmd0").value=cmd
 	jmolScript(cmd)
-}
+}*/
 
 function getTxtOp() {
 	getSelect(document.getElementById("txtop").value)
@@ -103,7 +103,7 @@ function pickCallback(a,b,i) {
 	document.getElementById("chkatoms").checked = true
 	getSelect()
 }
-
+/*
 SymInfo = {}
 
 function getSymInfo() {
@@ -179,7 +179,7 @@ function getSymInfo() {
 	}
 	document.getElementById("syminfo").innerHTML = s
 }
-
+*/
 
 // lower panel:
 Jmol.setButtonCss(null,"style='width:160px'");
@@ -248,8 +248,10 @@ jmolBr()
 </script>
 </td><td  valign=top>
 
+<!--
 <div id='syminfo'></div>
-
+-->
+	
 <br>
 <script type="text/javascript">
 _jmol.buttonCssText="style='width:160px'"
