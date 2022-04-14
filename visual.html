@@ -103,83 +103,6 @@ function pickCallback(a,b,i) {
 	document.getElementById("chkatoms").checked = true
 	getSelect()
 }
-/*
-SymInfo = {}
-
-function getSymInfo() {
-
-	// update all of the model-specific page items
-
-	SymInfo = {}
-	var s = ""
-	var info = jmolEvaluate('script("show spacegroup")')
-	if (info.indexOf("x,") < 0) {
-		s = "no space group"
-	} else {
-		var S = info.split("\n")
-		var hm = "?"
-		var itcnumber = "?"
-		var hallsym = "?"
-		var latticetype = "?"
-		var nop = 0 
-		var slist = ""
-		for (var i = 0; i < S.length; i++) {
-			var line = S[i].split(":")
-			if (line[0].indexOf("Hermann-Mauguin symbol") == 0)
-				s += "<br>" + S[i].replace(/Hermann\-Mauguin/,"<a href=http://en.wikipedia.org/wiki/Hermann%E2%80%93Mauguin_notation target=_blank>Hermann-Mauguin</a>")
-			else if (line[0].indexOf("international table number") == 0)
-				s += "<br>" + S[i].replace(/international table number/,"<a href=http://it.iucr.org/ target=_blank>international table</a> number")
-			else if (line[0].indexOf("Hall symbol") == 0)
-				s += "<br>" + S[i].replace(/Hall symbol/,"<a href=http://cci.lbl.gov/sginfo/hall_symbols.html target=_blank>Hall</a> symbol")
-			else if (line[0].indexOf("lattice type") == 0)
-				s += "<br>" + S[i].replace(/lattice type/,"<a href=http://cst-www.nrl.navy.mil/bind/static/lattypes.html target=_blank>lattice type</a>")
-			else if (line[0].indexOf(" symmetry operations") >= 0) 
-				nop = parseInt(line[0])
-			else if (nop > 0 && line[0].indexOf(",") >= 0)
-				slist += "\n" + S[i]
-		}
-		s += "<br><br><a href=javascript:doarrow(-1)><img align=bottom src=arrowleft.png border=0 /></a> "
-		s += nop + " operators"
-		s += " <a href=javascript:doarrow(1)><img align=bottom src=arrowright.png border=0 /></a>"
-
-		var S = slist.split("\n")
-		var n = 0;
-		var i = -1;while (S[++i].indexOf(",") < 0){}
-		s += "<br><select id='symselect' onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\"><option value=0>select a symmetry operation</option>"
-		for (;i < S.length;i++)
-			if (S[i].indexOf("x") >= 0) {
-				var sopt = S[i].split("|")[0].split("\t")
-				SymInfo[sopt[1]] = S[i].replace(/\t/,": ").replace(/\t/,"|")
-				sopt = sopt[0] + ": " + sopt[2] + " (" + sopt[1] + ")"
-				s += "<option value='" + parseInt(sopt) + "'>" + sopt + "</option>" 
-			}
-		s += "</select>"
-
-		s += "</br><input type=text id=txtop width=30 value='1-x,1-y,1-z' /><a href=javascript:getTxtOp()>show</a>"
-
-		var info = jmolEvaluate('{*}.label("#%i %a {%[fxyz]/1}")').split("\n")
-		var nPoints = info.length
-		var nBase = jmolEvaluate('{symop=1555}.length')
-		s += "<br><select id='atomselect' onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\"><option value=0>base atoms</option>"
-		s += "<option value='{0 0 0}'>{0 0 0}</option>"
-		s += "<option value='{1/2 1/2 1/2}'>{1/2 1/2 1/2}</option>"
-		for (var i = 0; i < nPoints; i++)
-			s+= "<option value=" + i + (i == 0 ? " selected" : "") + ">" + info[i] + "</option>" 
-		s += "</select>"
-
-		s += "</br><input type=checkbox id=chkatoms onchange=getSelect() />show atoms"
-		s += " opacity:<select id=selopacity onchange=getSelect() onkeypress=\"setTimeout('getSelect()',50)\">"
-		  + "<option value=0.0>0%</option>"
-		  + "<option value=0.2 selected>20%</option>"
-		  + "<option value=0.4>40%</option>"
-		  + "<option value=0.6>60%</option>"
-		  + "<option value=1.0>100%</option>"
-		  + "</select>"
-		
-	}
-	document.getElementById("syminfo").innerHTML = s
-}
-*/
 
 // lower panel:
 Jmol.setButtonCss(null,"style='width:160px'");
@@ -248,10 +171,6 @@ jmolBr()
 </script>
 </td><td  valign=top>
 
-<!--
-<div id='syminfo'></div>
--->
-	
 <br>
 <script type="text/javascript">
 _jmol.buttonCssText="style='width:160px'"
