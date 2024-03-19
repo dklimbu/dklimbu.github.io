@@ -1,0 +1,215 @@
+.avatar {
+  /*-webkit-filter: grayscale(50%);*/
+  /*filter: grayscale(50%);*/
+  height: 200px;
+  width: 200px;
+}
+
+.avatar:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+#preprint {
+  color: rgb(102, 102, 102);
+  border-color: rgb(102, 102, 102);
+}
+
+#preprint:hover {
+  color: #ffffff;
+  background-color: rgb(102, 102, 102);
+}
+
+#SoftImpact {
+  color: #0051ba;
+  border-color: #0051ba;
+}
+
+#SoftImpact:hover {
+  color: #ffffff;
+  background-color: #0051ba;
+}
+
+
+#JCIM {
+  color: #c50180;
+  border-color: #c50180;
+}
+
+#JCIM:hover {
+  color: #ffffff;
+  background-color: #c50180;
+}
+
+#JPCLett {
+  color: rgb(33,176,141);
+  border-color: rgb(33,176,141);
+}
+
+#JPCLett:hover {
+  color: #ffffff;
+  background-color: rgb(33,176,141);
+}
+
+
+#ACSAMatInt {
+  color: #02cfc3;
+  border-color: #02cfc3;
+}
+
+#ACSAMatInt:hover {
+  color: #ffffff;
+  background-color: #02cfc3;
+}
+
+#ChemMat {
+  color: rgb(244,185,10);
+  border-color: rgb(244,185,10);
+}
+
+#ChemMat:hover {
+  color: #ffffff;
+  background-color: rgb(244,185,10);
+}
+
+#pssb {
+  color: #0051b9;
+  border-color: #0051b9;
+}
+
+#pssb:hover {
+  color: #ffffff;
+  background-color: #0051b9;
+}
+
+
+#SciRep {
+  color: rgb(21,152,18);
+  border-color: rgb(21,152,18);
+}
+
+#SciRep:hover {
+  color: #ffffff;
+  background-color: rgb(21,152,18);
+}
+
+#MRSAdv {
+  color: #18a5ae;
+  border-color: #18a5ae;
+}
+
+#MRSAdv:hover {
+  color: #ffffff;
+  background-color: #18a5ae;
+}
+
+#PhysRevMat {
+  color: rgb(199, 28, 6);
+  border-color: rgb(199, 28, 6);
+}
+
+#PhysRevMat:hover {
+  color: #ffffff;
+  background-color: rgb(199, 28, 6);
+}
+
+#PhysRevB {
+  color: #00cbf8;
+  border-color: #00cbf8;
+}
+
+#PhysRevB:hover {
+  color: #ffffff;
+  background-color: #00cbf8;
+}
+
+#JPhyCS {
+  color: rgb(255,101,80);
+  border-color: rgb(255,101,80);
+}
+
+#JPhyCS:hover {
+  color: #ffffff;
+  background-color: rgb(255,101,80);
+}
+
+.usm {
+  background-image: url("../../assets/images/usm.png");
+  background-repeat: no-repeat;
+  background-size: 4%;
+  background-position: right 1% bottom 98%;
+}
+
+.njit {
+  background-image: url("../../assets/images/njit.png");
+  background-repeat: no-repeat;
+  background-size: 4%;
+  background-position: right 1% bottom 98%;
+}
+
+.umkc {
+  background-image: url("../../assets/images/umkc.png");
+  background-repeat: no-repeat;
+  background-size: 5%;
+  background-position: right 1% bottom 98%;
+}
+
+a {
+  color: rgb(196, 112, 2);
+  text-decoration: underline;
+}
+
+a:hover {
+  color: rgb(143, 82, 3);
+}
+
+.btn {
+  color: rgb(192, 109, 0);
+  text-decoration: none;
+  border-color: rgb(196, 112, 2);
+}
+
+.btn:hover {
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
+  border-color: rgb(0, 0, 0);
+}
+
+.navbar:hover {
+  background: linear-gradient(120deg,#3e3e3b,#000000);
+}
+
+.nav-link {
+  text-decoration: none;
+}
+
+.item {
+  -webkit-filter: grayscale(30%);
+  filter: grayscale(30%);
+}
+
+.item:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.col-md-6 {
+  -webkit-filter: grayscale(30%);
+  filter: grayscale(30%);
+}
+
+.col-md-6:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
+.col-md-4 {
+  -webkit-filter: grayscale(30%);
+  filter: grayscale(30%);
+}
+
+.col-md-4:hover {
+  -webkit-filter: grayscale(0%);
+  filter: grayscale(0%);
+}
+
