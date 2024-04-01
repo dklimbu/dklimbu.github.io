@@ -20,6 +20,17 @@
   background-color: rgb(102, 102, 102);
 }
 
+#JCP {
+  color: #b57f1c;
+  border-color: #b57f1c;
+}
+
+#JCP:hover {
+  color: #ffffff;
+  background-color: #b57f1c;
+}
+
+
 #SoftImpact {
   color: #0051ba;
   border-color: #0051ba;
