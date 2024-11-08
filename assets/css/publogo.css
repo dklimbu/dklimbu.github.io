@@ -20,6 +20,16 @@
   background-color: rgb(102, 102, 102);
 }
 
+#ACSCGD {
+  color: #b03208;
+  border-color: #b03208;
+}
+
+#ACSCGD:hover {
+  color: #ffffff;
+  background-color: #b03208;
+}
+
 #JCP {
   color: #b57f1c;
   border-color: #b57f1c;
